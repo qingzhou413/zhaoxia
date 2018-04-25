@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.CartMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.Cart" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="USER_ID" property="userId" jdbcType="BIGINT" />
+        <id column="GOODS_ID" property="goodsId" jdbcType="BIGINT" />
+        <id column="SPEC_DET_ID" property="specDetId" jdbcType="BIGINT" />
+        <id column="COUNT" property="count" jdbcType="INTEGER" />
+        <id column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, USER_ID, GOODS_ID, SPEC_DET_ID, `COUNT`, ADD_TIME
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `cart`
+    </select>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `cart`
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+
+    </select>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.Cart" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        `cart`
+        (USER_ID, GOODS_ID, SPEC_DET_ID, `COUNT`, ADD_TIME) VALUES
+        (#{userId, jdbcType=BIGINT}, #{goodsId, jdbcType=BIGINT}, #{specDetId, jdbcType=BIGINT},
+        #{count, jdbcType=INTEGER}, #{addTime, jdbcType=TIMESTAMP})
+    </insert>
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `cart`
+        WHERE
+        USER_ID = #{userId, jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByUserIdAndCartId">
+        DELETE
+        FROM
+        `cart`
+        WHERE
+        USER_ID = #{userId, jdbcType=BIGINT}
+        AND `ID` = #{id, jdbcType=BIGINT}
+    </delete>
+    <select id="selectByUserIdGoodsIdSpecId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `cart`
+        WHERE
+        USER_ID = #{userId, jdbcType=BIGINT}
+        AND GOODS_ID = #{goodsId, jdbcType=BIGINT}
+        AND SPEC_DET_ID = #{specDetId, jdbcType=BIGINT}
+    </select>
+    <update id="updateCartItemCount">
+        UPDATE
+        `cart`
+        SET
+        `COUNT` = #{count, jdbcType=INTEGER}
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </update>
+    <select id="selectByUserIdAndId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `cart`
+        WHERE
+        USER_ID = #{userId, jdbcType=BIGINT}
+        AND `ID` = #{id, jdbcType=BIGINT}
+    </select>
+</mapper>

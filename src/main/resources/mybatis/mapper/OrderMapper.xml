@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.OrderMapper">
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.Order">
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <id column="APPID" property="appid" jdbcType="VARCHAR"/>
+        <id column="MCH_ID" property="mchId" jdbcType="VARCHAR"/>
+        <id column="USER_ID" property="userId" jdbcType="BIGINT"/>
+        <id column="OPEN_ID" property="openId" jdbcType="VARCHAR"/>
+        <id column="ADDRESS" property="address" jdbcType="VARCHAR"/>
+        <id column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+        <id column="HEAD_IMG_URL" property="headimgurl" jdbcType="VARCHAR"/>
+        <id column="TRADE_NUM" property="tradeNum" jdbcType="VARCHAR"/>
+        <id column="TRADE_TYPE" property="tradeType" jdbcType="VARCHAR"/>
+        <id column="DETAILS" property="details" jdbcType="VARCHAR"/>
+        <id column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL"/>
+        <id column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <id column="BANK_TYPE" property="bankType" jdbcType="VARCHAR"/>
+        <id column="PAY_TIME" property="payTime" jdbcType="TIMESTAMP"/>
+        <id column="TRANSACTION_ID" property="transactionId" jdbcType="VARCHAR"/>
+        <id column="STATUS" property="status" jdbcType="INTEGER"/>
+        <id column="REMARK" property="remark" jdbcType="VARCHAR"/>
+        <id column="RET_PREPAY_ID" property="retPrepayId" jdbcType="VARCHAR"/>
+        <id column="DELIVER_STATUS" property="deliverStatus" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, APPID, MCH_ID, USER_ID, OPEN_ID, ADDRESS, NICKNAME, HEAD_IMG_URL, TRADE_NUM, TRADE_TYPE, DETAILS,
+        TOTAL_MONEY, CREATE_TIME, BANK_TYPE, PAY_TIME, TRANSACTION_ID, `STATUS`, REMARK, RET_PREPAY_ID, DELIVER_STATUS
+    </sql>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        `order`
+        (APPID, MCH_ID, USER_ID, OPEN_ID, ADDRESS, NICKNAME, HEAD_IMG_URL, TRADE_NUM, TRADE_TYPE, DETAILS,
+        TOTAL_MONEY, CREATE_TIME, BANK_TYPE, PAY_TIME, TRANSACTION_ID, `STATUS`, REMARK, RET_PREPAY_ID, DELIVER_STATUS)
+        VALUES
+        (#{appid, jdbcType=VARCHAR}, #{mchId, jdbcType=VARCHAR}, #{userId, jdbcType=BIGINT},
+        #{openId, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{nickname, jdbcType=VARCHAR}, #{headimgurl, jdbcType=VARCHAR},
+        #{tradeNum, jdbcType=VARCHAR}, #{tradeType, jdbcType=VARCHAR}, #{details, jdbcType=VARCHAR},
+        #{totalMoney, jdbcType=DECIMAL}, #{createTime, jdbcType=TIMESTAMP}, #{bankType, jdbcType=VARCHAR},
+        #{payTime, jdbcType=TIMESTAMP}, #{transactionId, jdbcType=VARCHAR}, #{status, jdbcType=INTEGER},
+        #{remark, jdbcType=VARCHAR}, #{retPrepayId, jdbcType=VARCHAR}, #{deliverStatus, jdbcType=INTEGER})
+    </insert>
+    <select id="selectByWeiXinPayCallback" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        WHERE
+        MCH_ID = #{mchId, jdbcType=VARCHAR}
+        AND OPEN_ID = #{openId, jdbcType=VARCHAR}
+        AND TRADE_NUM = #{tradeNum, jdbcType=VARCHAR}
+    </select>
+    <select id="selectByMchIdAndTradeNum" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        WHERE
+        MCH_ID = #{mchId, jdbcType=VARCHAR}
+        AND TRADE_NUM = #{tradeNum, jdbcType=VARCHAR}
+    </select>
+    <update id="updateOrderSuccess">
+        UPDATE
+        `order`
+        SET
+        PAY_TIME = #{timeEnd, jdbcType=TIMESTAMP},
+        BANK_TYPE = #{bankType, jdbcType=VARCHAR},
+        TRANSACTION_ID = #{transactionId, jdbcType=VARCHAR},
+        `STATUS` = 1,
+        `DELIVER_STATUS` = 1
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+    <select id="selectCountByCondition" resultType="int" parameterType="java.util.Map">
+        SELECT
+        COUNT(*)
+        FROM
+        `order`
+        <where>
+            <if test="appid != null">
+                AND APPID = #{appid, jdbcType=VARCHAR}
+            </if>
+            <if test="openid != null">
+                AND OPEN_ID = #{openid, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        <where>
+            <if test="appid != null">
+                AND APPID = #{appid, jdbcType=VARCHAR}
+            </if>
+            <if test="openid != null">
+                AND OPEN_ID = #{openid, jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY CREATE_TIME DESC
+        <if test="begin != null">
+            limit #{begin}, #{size}
+        </if>
+    </select>
+    <select id="unpayedOrders" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        WHERE
+        STATUS = 0
+    </select>
+    <update id="closeOrder">
+        UPDATE
+        `order`
+        SET
+        STATUS = -1
+        WHERE
+        MCH_ID = #{mchId, jdbcType=VARCHAR}
+        <if test="openid != null">
+          AND OPEN_ID = #{openid, jdbcType=VARCHAR}
+        </if>
+        <if test="transactionId != null">
+          AND TRANSACTION_ID = #{transactionId, jdbcType=VARCHAR}
+        </if>
+        AND TRADE_NUM = #{tradeNum, jdbcType=VARCHAR}
+
+    </update>
+    <select id="selectByUserIdAndOrderId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        WHERE
+        USER_ID = #{userId, jdbcType=BIGINT}
+        AND ID = #{orderId, jdbcType=BIGINT}
+    </select>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `order`
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </select>
+    <update id="deliver" parameterType="java.lang.Long">
+        UPDATE
+        `order`
+        SET
+        DELIVER_STATUS = 2
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </update>
+</mapper>

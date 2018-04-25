@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.GoodsSpecDetMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.GoodsSpecDet" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="GOODS_ID" property="goodsId" jdbcType="BIGINT" />
+        <id column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+        <id column="PRICE" property="price" jdbcType="DECIMAL" />
+        <id column="LEFT_CNT" property="leftCnt" jdbcType="INTEGER" />
+        <id column="BAR_CODE" property="barCode" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, GOODS_ID, SPEC_NAME, PRICE, LEFT_CNT, BAR_CODE
+    </sql>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods_spec_det`
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </select>
+    <select id="selectByGoodsId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods_spec_det`
+        WHERE
+        GOODS_ID = #{goodsId, jdbcType=BIGINT}
+    </select>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.GoodsSpecDet" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        `goods_spec_det`
+        (`GOODS_ID`, `SPEC_NAME`, `PRICE`, LEFT_CNT, BAR_CODE) VALUES
+        (#{goodsId, jdbcType=BIGINT}, #{specName, jdbcType=VARCHAR}, #{price, jdbcType=DECIMAL}, #{leftCnt, jdbcType=INTEGER},
+        #{barCode,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="cn.zhaoblog.zhaoxia.entity.GoodsSpecDet">
+        UPDATE
+        `goods_spec_det`
+        SET
+        `SPEC_NAME` = #{specName, jdbcType=VARCHAR},
+        `PRICE` = #{price, jdbcType=DECIMAL},
+        LEFT_CNT = #{leftCnt, jdbcType=INTEGER},
+        BAR_CODE = #{barCode,jdbcType=VARCHAR}
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+    <delete id="deleteByGoodsId" parameterType="java.lang.Long">
+        DELETE
+        FROM
+        `goods_spec_det`
+        WHERE
+        GOODS_ID = #{goodsId, jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteExceptKeeped">
+        DELETE
+        FROM
+        `goods_spec_det`
+        WHERE
+        GOODS_ID = #{goodsId, jdbcType=BIGINT}
+        AND `ID` NOT IN
+        <foreach collection="keepedSpecs" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="updateLeftCount">
+        UPDATE
+        `goods_spec_det`
+        SET
+        LEFT_CNT = #{leftCount, jdbcType=INTEGER}
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </update>
+    <update id="addLeftCount">
+        UPDATE
+        `goods_spec_det`
+        SET
+        LEFT_CNT = LEFT_CNT + #{count, jdbcType=INTEGER}
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </update>
+    <update id="updatePriceAndLeftCount">
+        UPDATE
+        `goods_spec_det`
+        SET
+        `PRICE` = #{price, jdbcType=DECIMAL},
+        LEFT_CNT = #{leftCount, jdbcType=INTEGER}
+        WHERE
+        BAR_CODE = #{barCode,jdbcType=VARCHAR}
+    </update>
+</mapper>

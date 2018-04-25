@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.WeiXinPubMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.WeiXinPub" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="APPID" property="appid" jdbcType="VARCHAR" />
+        <id column="SECRET" property="secret" jdbcType="VARCHAR" />
+        <id column="NAME" property="name" jdbcType="VARCHAR" />
+        <id column="HEAD_IMG_URL" property="headimgurl" jdbcType="VARCHAR" />
+        <id column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+        <id column="CERT_PATH" property="certPath" jdbcType="VARCHAR" />
+        <id column="CERT_PASS" property="certPass" jdbcType="VARCHAR" />
+        <id column="MCH_ID" property="mchId" jdbcType="VARCHAR" />
+        <id column="MCH_KEY" property="mchKey" jdbcType="VARCHAR" />
+        <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+        <id column="LOGIN_PASS" property="loginPass" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, APPID, `SECRET`, `NAME`, HEAD_IMG_URL, REAL_NAME, CERT_PATH, CERT_PASS, MCH_ID, MCH_KEY, LOGIN_NAME, LOGIN_PASS
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `weixin_pub`
+    </select>
+    <select id="selectByLoginName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `weixin_pub`
+        WHERE
+        LOGIN_NAME = #{loginName, jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.WeiXinUserMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.WeiXinUser" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="APPID" property="appid" jdbcType="VARCHAR" />
+        <id column="OPENID" property="openid" jdbcType="VARCHAR" />
+        <id column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
+        <id column="SEX" property="sex" jdbcType="INTEGER" />
+        <id column="PROVINCE" property="province" jdbcType="VARCHAR" />
+        <id column="CITY" property="city" jdbcType="VARCHAR" />
+        <id column="COUNTRY" property="country" jdbcType="VARCHAR" />
+        <id column="HEAD_IMG_URL" property="headimgurl" jdbcType="VARCHAR" />
+        <id column="PRIVILEGE_STR" property="privilegeStr" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, APPID, OPENID, NICKNAME, SEX, PROVINCE, CITY, COUNTRY, HEAD_IMG_URL, PRIVILEGE_STR
+    </sql>
+    <select id="selectByAppidAndOpenid" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        weixin_user
+        WHERE
+        APPID = #{appid, jdbcType=VARCHAR}
+        AND OPENID = #{openid, jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.WeiXinUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        weixin_user
+        (ID, APPID, OPENID, NICKNAME, SEX, PROVINCE, CITY, COUNTRY, HEAD_IMG_URL, PRIVILEGE_STR)
+        VALUES
+        (#{id, jdbcType=BIGINT}, #{appid, jdbcType=VARCHAR}, #{openid, jdbcType=VARCHAR}, #{nickname, jdbcType=VARCHAR},
+        #{sex, jdbcType=INTEGER}, #{province, jdbcType=VARCHAR}, #{city, jdbcType=VARCHAR},
+        #{country, jdbcType=VARCHAR}, #{headimgurl, jdbcType=VARCHAR}, #{privilegeStr, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="cn.zhaoblog.zhaoxia.entity.WeiXinUser">
+        UPDATE
+        weixin_user
+        SET
+        NICKNAME = #{nickname, jdbcType=VARCHAR},
+        SEX = #{sex, jdbcType=INTEGER},
+        PROVINCE = #{province, jdbcType=VARCHAR},
+        CITY = #{city, jdbcType=VARCHAR},
+        COUNTRY = #{country, jdbcType=VARCHAR},
+        HEAD_IMG_URL = #{headimgurl, jdbcType=VARCHAR},
+        PRIVILEGE_STR = #{privilegeStr, jdbcType=VARCHAR}
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </update>
+</mapper>

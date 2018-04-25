@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.BrandMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.Brand" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="NAME" property="name" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, `NAME`
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `brand`
+    </select>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `brand`
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+
+    </select>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.Brand" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        `brand`
+        (`NAME`) VALUES
+        (#{name, jdbcType=VARCHAR})
+    </insert>
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `brand`
+        WHERE
+        NAME = #{name, jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteById">
+        DELETE
+        FROM
+        `brand`
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </delete>
+</mapper>

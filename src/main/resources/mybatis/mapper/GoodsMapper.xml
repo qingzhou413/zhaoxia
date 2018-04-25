@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.GoodsMapper" >
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.Goods" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <id column="ROOT_CAT_ID" property="rootCatId" jdbcType="BIGINT" />
+        <id column="SUB_CAT_ID" property="subCatId" jdbcType="BIGINT" />
+        <id column="BRAND_ID" property="brandId" jdbcType="BIGINT" />
+        <id column="PACK_ID" property="packId" jdbcType="BIGINT" />
+        <id column="NAME" property="name" jdbcType="VARCHAR" />
+        <id column="SALE_COUNT" property="saleCount" jdbcType="INTEGER" />
+        <id column="HEAD_IMG" property="headImg" jdbcType="VARCHAR" />
+        <id column="DET_IMGS_STR" property="detImgsStr" jdbcType="VARCHAR" />
+        <id column="DESC" property="desc" jdbcType="VARCHAR" />
+        <id column="VIEW_COUNT" property="viewCount" jdbcType="INTEGER" />
+        <id column="ACTIVE" property="active" jdbcType="TINYINT" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, ROOT_CAT_ID, SUB_CAT_ID, BRAND_ID, PACK_ID, `NAME`, SALE_COUNT, HEAD_IMG, DET_IMGS_STR, `DESC`, VIEW_COUNT, `ACTIVE`
+    </sql>
+    <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods`
+        <where>
+            <if test="id != null">
+                AND ID = #{id, jdbcType=BIGINT}
+            </if>
+            <if test="rootCatId != null">
+                AND ROOT_CAT_ID = #{rootCatId, jdbcType=BIGINT}
+            </if>
+            <if test="subCatId != null">
+                AND SUB_CAT_ID = #{subCatId, jdbcType=BIGINT}
+            </if>
+            <if test="brandId != null">
+                AND BRAND_ID = #{brandId, jdbcType=BIGINT}
+            </if>
+            <if test="name != null">
+                AND `NAME` = #{name, jdbcType=VARCHAR}
+            </if>
+            <if test="active != null">
+                AND `ACTIVE` = #{active, jdbcType=TINYINT}
+            </if>
+        </where>
+        <if test="begin != null">
+            limit #{begin}, #{size}
+        </if>
+    </select>
+    <select id="selectCountByCondition" resultType="int" parameterType="java.util.Map">
+        SELECT
+        COUNT(ID)
+        FROM
+        `goods`
+        <where>
+            <if test="id != null">
+                ID = #{id, jdbcType=BIGINT}
+            </if>
+            <if test="rootCatId != null">
+                AND ROOT_CAT_ID = #{rootCatId, jdbcType=BIGINT}
+            </if>
+            <if test="subCatId != null">
+                AND SUB_CAT_ID = #{subCatId, jdbcType=BIGINT}
+            </if>
+            <if test="brandId != null">
+                AND BRAND_ID = #{brandId, jdbcType=BIGINT}
+            </if>
+            <if test="name != null">
+                AND `NAME` = #{name, jdbcType=VARCHAR}
+            </if>
+            <if test="active != null">
+                AND `ACTIVE` = #{active, jdbcType=TINYINT}
+            </if>
+        </where>
+    </select>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.Goods" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        `goods`
+        (ROOT_CAT_ID, SUB_CAT_ID, BRAND_ID, PACK_ID, `NAME`, SALE_COUNT, HEAD_IMG, DET_IMGS_STR,
+        `DESC`, VIEW_COUNT, `ACTIVE`) VALUES
+        (#{rootCatId, jdbcType=BIGINT}, #{subCatId, jdbcType=BIGINT}, #{brandId, jdbcType=BIGINT}, #{packId, jdbcType=BIGINT}, #{name, jdbcType=VARCHAR},
+        #{saleCount, jdbcType=INTEGER}, #{headImg, jdbcType=VARCHAR},
+        #{detImgsStr, jdbcType=VARCHAR}, #{desc, jdbcType=VARCHAR}, #{viewCount, jdbcType=INTEGER},
+        #{active, jdbcType=TINYINT})
+    </insert>
+    <update id="update" parameterType="cn.zhaoblog.zhaoxia.entity.Goods">
+        UPDATE
+        `goods`
+        SET
+        ROOT_CAT_ID = #{rootCatId, jdbcType=BIGINT},
+        SUB_CAT_ID = #{subCatId, jdbcType=BIGINT},
+        BRAND_ID = #{brandId, jdbcType=BIGINT},
+        PACK_ID = #{packId, jdbcType=BIGINT},
+        `NAME` = #{name, jdbcType=VARCHAR},
+        HEAD_IMG = #{headImg, jdbcType=VARCHAR},
+        DET_IMGS_STR = #{detImgsStr, jdbcType=VARCHAR},
+        `DESC` = #{desc, jdbcType=VARCHAR}
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods`
+        WHERE
+        ID = #{id, jdbcType=BIGINT}
+    </select>
+    <select id="selectHot" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods`
+        WHERE
+        `ACTIVE` = 1
+        ORDER BY VIEW_COUNT DESC
+        limit 10
+    </select>
+    <select id="selectHome" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `goods`
+        WHERE
+        `ACTIVE` = 1
+        limit 10
+    </select>
+    <update id="addViewCount" parameterType="java.lang.Long">
+        UPDATE
+        `goods`
+        SET
+        VIEW_COUNT = (VIEW_COUNT + 1)
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+    <update id="updateActive">
+        UPDATE
+        `goods`
+        SET
+        `ACTIVE` = #{active, jdbcType=TINYINT}
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE
+        FROM
+        `goods`
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </delete>
+    <update id="addSaleCount">
+        UPDATE
+        `goods`
+        SET
+        SALE_COUNT = SALE_COUNT + #{count, jdbcType=INTEGER}
+        WHERE
+        `ID` = #{id, jdbcType=BIGINT}
+    </update>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhaoblog.zhaoxia.mapper.AddressMapper">
+    <resultMap id="BaseResultMap" type="cn.zhaoblog.zhaoxia.entity.Address">
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <id column="APPID" property="appid" jdbcType="VARCHAR"/>
+        <id column="USER_ID" property="userId" jdbcType="BIGINT"/>
+        <id column="NAME" property="name" jdbcType="VARCHAR"/>
+        <id column="PHONE" property="phone" jdbcType="VARCHAR"/>
+        <id column="AREA" property="area" jdbcType="VARCHAR"/>
+        <id column="ADDRESS" property="address" jdbcType="VARCHAR"/>
+        <id column="ACTIVE_TIME" property="activeTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, APPID, USER_ID, `NAME`, PHONE, `AREA`, `ADDRESS`, ACTIVE_TIME
+    </sql>
+    <insert id="insert" parameterType="cn.zhaoblog.zhaoxia.entity.Address">
+        INSERT INTO
+        `address`
+        (APPID, USER_ID, `NAME`, `PHONE`, `AREA`, `ADDRESS`, ACTIVE_TIME)
+        VALUES
+        (#{appid, jdbcType=VARCHAR}, #{userId, jdbcType=BIGINT}, #{name, jdbcType=VARCHAR},
+        #{phone, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR},
+        #{activeTime, jdbcType=TIMESTAMP})
+    </insert>
+    <select id="selectDefaultAddress" resultMap="BaseResultMap" parameterType="cn.zhaoblog.zhaoxia.entity.WeiXinUser">
+      SELECT
+      <include refid="Base_Column_List"/>
+      FROM
+      `address`
+      WHERE
+      APPID = #{appid, jdbcType=VARCHAR}
+      AND USER_ID = #{id, jdbcType=BIGINT}
+      ORDER BY ACTIVE_TIME DESC
+      LIMIT 1
+    </select>
+    <select id="selectByUser" resultMap="BaseResultMap" parameterType="cn.zhaoblog.zhaoxia.entity.WeiXinUser">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `address`
+        WHERE
+        APPID = #{appid, jdbcType=VARCHAR}
+        AND USER_ID = #{id, jdbcType=BIGINT}
+    </select>
+    <select id="selectByUserAndId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `address`
+        WHERE
+        APPID = #{appid, jdbcType=VARCHAR}
+        AND USER_ID = #{userId, jdbcType=BIGINT}
+        AND `ID` = #{id, jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByUserIdAndId">
+        DELETE
+        FROM
+        `address`
+        WHERE
+        USER_ID =  #{userId, jdbcType=BIGINT}
+        AND `ID` = #{id, jdbcType=BIGINT}
+    </delete>
+</mapper>
