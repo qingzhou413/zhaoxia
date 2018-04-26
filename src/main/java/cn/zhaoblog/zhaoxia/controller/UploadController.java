@@ -37,7 +37,10 @@ public class UploadController extends BaseController {
                     msg.addErrorMsg("未找到上传文件");
                 }else{
                     //写入文件
-                    String fileName = UuidUtil.getUuid() + "_" + binFile.getOriginalFilename();
+                    String fileNameStr = binFile.getOriginalFilename();
+                    int dotInd = fileNameStr.lastIndexOf(".");
+                    String suffix = dotInd == -1 ? fileNameStr : fileNameStr.substring(dotInd);
+                    String fileName = UuidUtil.getUuid() + suffix;
 
                     try {
                         boolean b = FileUtil.writeToFile(PathUtil.getUploadImgPath() + fileName, binFile.getBytes());

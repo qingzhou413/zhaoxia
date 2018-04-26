@@ -1,6 +1,7 @@
 package cn.zhaoblog.zhaoxia.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,6 +63,10 @@ public class Goods implements Serializable {
      * 是否上架中
      */
     private Boolean active;
+    /**
+     * 编辑时间
+     */
+    private Date editTime;
 
     public Goods() {
         this.saleCount = 0;
@@ -173,6 +178,14 @@ public class Goods implements Serializable {
         this.active = active;
     }
 
+    public Date getEditTime() {
+        return editTime;
+    }
+
+    public void setEditTime(Date editTime) {
+        this.editTime = editTime;
+    }
+
     @Override
     public String toString() {
         return "Goods{" +
@@ -189,6 +202,7 @@ public class Goods implements Serializable {
                 ", desc='" + desc + '\'' +
                 ", viewCount='" + viewCount + '\'' +
                 ", active='" + active + '\'' +
+                ", editTime='" + editTime + '\'' +
                 '}';
     }
 }
